@@ -419,6 +419,6 @@ springBoot {
     mainClass = 'com.spring.app.FinalProjectApplication'
 }
 
-bootJar {
+tasks.named('bootJar') {
     mainClass = 'com.spring.app.FinalProjectApplication'
 }
