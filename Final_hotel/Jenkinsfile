@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE   = "jehyung/final-hotel"
-        SERVER_IP      = "52.78.215.25"
+        DOCKER_IMAGE   = "leehk9311/final-hotel"
+        SERVER_IP      = "13.125.241.228"
         CONTAINER_NAME = "final-hotel"
     }
 
