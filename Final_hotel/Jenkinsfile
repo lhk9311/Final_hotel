@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE   = "leehk9311/final-hotel"
+        DOCKER_IMAGE   = "leehk9311/final_hotel"
         SERVER_IP      = "13.125.241.228"
         CONTAINER_NAME = "final-hotel"
     }
@@ -20,28 +20,32 @@ pipeline {
         }
 
         stage('Build with Gradle') {
-            steps {
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build -x test'
-            }
-        }
+		    steps {
+		        dir('Final_hotel') {
+		            sh 'chmod +x ./gradlew'
+		            sh './gradlew clean build -x test'
+		        }
+		    }
+		}
 
         stage('Docker Build & Push') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub_info',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh '''
-                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        docker build -t $DOCKER_IMAGE:latest .
-                        docker push $DOCKER_IMAGE:latest
-                        docker logout || true
-                    '''
-                }
-            }
-        }
+		    steps {
+		        dir('Final_hotel') {
+		            withCredentials([usernamePassword(
+		                credentialsId: 'dockerhub_info',
+		                usernameVariable: 'DOCKER_USER',
+		                passwordVariable: 'DOCKER_PASS'
+		            )]) {
+		                sh '''
+		                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+		                    docker build -t $DOCKER_IMAGE:latest .
+		                    docker push $DOCKER_IMAGE:latest
+		                    docker logout || true
+		                '''
+		            }
+		        }
+		    }
+		}
 
         stage('Deploy to Server') {
             steps {
@@ -51,7 +55,7 @@ pipeline {
                             docker stop $CONTAINER_NAME || true
                             docker rm $CONTAINER_NAME || true
                             docker pull $DOCKER_IMAGE:latest
-                            docker run -d --name $CONTAINER_NAME --restart unless-stopped -p 8001:8001 $DOCKER_IMAGE:latest
+                            docker run -d --name $CONTAINER_NAME --restart unless-stopped -p 8001:9081 $DOCKER_IMAGE:latest
                         '
                     """
                 }
