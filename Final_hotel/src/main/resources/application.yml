@@ -175,6 +175,7 @@ logging: #로그 지정
     # 개발중일때는 debug 로 설정하여 꼼꼼이 확인을 하나, 운영(배포)중 일떼는 로그가 너무 많으면 서버 성능에 영향을 주므로 info 나 error 로 수정한다.
 
 server:
+  address: 0.0.0.0
   port: 9081
   servlet:
     context-path: /final_hotel  # Spring Framework 에서는 WAS 톰캣서버를 더블클릭하여 context Path 를 수정하였으나 Spring Boot 에서는 여기에서 한다. context-path: 를 주석처리하면 context Path 가 없는 것이다.
