@@ -213,5 +213,14 @@ public class AdminRoomService_imple implements AdminRoomService {
 	    return adminRoomDAO.selectHotelList();
 	}
 
+
+	// 엑셀 업로드
+	@Override
+	public void insertRoomFromExcel(Map<String, Object> room) {
+	    room.put("approve_status", "PENDING");
+	    room.put("is_active", "Y");
+	    adminRoomDAO.insertRoomFromExcel(room);
+	}
+
 	
 }

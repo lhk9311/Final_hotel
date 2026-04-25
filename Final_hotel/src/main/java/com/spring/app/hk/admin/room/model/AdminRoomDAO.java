@@ -64,6 +64,9 @@ public interface AdminRoomDAO {
 
 	// 호텔 필터용
 	List<Map<String, Object>> selectHotelList();
+	
+	// 추가
+	void insertRoomFromExcel(Map<String, Object> paraMap);
 
 	
 

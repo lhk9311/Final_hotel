@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>객실 엑셀 업로드</title>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container" style="margin-top:60px; max-width:600px;">
+
+    <h4 class="mb-4">객실 엑셀 업로드</h4>
+
+    <!-- 템플릿 다운로드 안내 -->
+    <div class="alert alert-info mb-4">
+        엑셀 컬럼 순서 : 호텔ID / 객실명 / 등급 / 침대타입 / 전망타입 / 객실크기 / 최대인원 / 총객실수 / 기본가격
+    </div>
+
+    <form method="post"
+          th:action="@{/admin/room/upload}"
+          enctype="multipart/form-data">
+
+        <div class="mb-3">
+            <input type="file" name="file" accept=".xlsx,.xls" class="form-control"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">업로드</button>
+        <a th:href="@{/admin/room/branch/list}" class="btn btn-secondary ms-2">취소</a>
+
+    </form>
+
+</div>
+</body>
+</html>

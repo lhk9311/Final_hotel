@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,11 +19,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.app.common.FileManager;
+import com.spring.app.hk.admin.reservation.service.ExcelService;
 import com.spring.app.hk.admin.room.service.AdminRoomService;
 import com.spring.app.hk.room.domain.RoomTypeDTO;
 import com.spring.app.jh.security.domain.CustomAdminDetails;
 import com.spring.app.jh.security.domain.Session_AdminDTO;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -32,6 +35,9 @@ import lombok.RequiredArgsConstructor;
 public class AdminRoomController {
 
 	private final AdminRoomService roomService;
+	private final ExcelService excelService;
+	private final AdminRoomService adminRoomService;
+	
 
 	// 이미지 업로드 위해 추가
 	private final FileManager fileManager;
@@ -344,5 +350,42 @@ public class AdminRoomController {
 		return roomService.getRoomApprovalHistory(roomTypeId);
 
 	}
+	
+	// 엑셀 업로드 페이지
+		@GetMapping("/upload")
+		public String roomUploadPage() {
+		    return "hk/admin/room/upload";
+		}
+		// 엑셀 업로드 처리
+		@PostMapping("/upload")
+		public void uploadRoomExcel(
+		        @RequestParam("file") MultipartFile file,
+		        HttpServletResponse response) throws Exception {
+
+		    List<Map<String,Object>> parsedList = excelService.parseRoomExcel(file);
+
+		    // 오류 행 / 정상 행 분리
+		    List<Map<String,Object>> errorList = parsedList.stream()
+		            .filter(r -> !((List<?>) r.get("errors")).isEmpty())
+		            .collect(Collectors.toList());
+
+		    List<Map<String,Object>> validList = parsedList.stream()
+		            .filter(r -> ((List<?>) r.get("errors")).isEmpty())
+		            .collect(Collectors.toList());
+
+		    // 정상 행 DB INSERT ---> Batch Insert
+		    for (Map<String,Object> room : validList) {
+		        adminRoomService.insertRoomFromExcel(room);
+		    }
+
+		    // 오류 있으면 오류 엑셀 반환
+		    if (!errorList.isEmpty()) {
+		        excelService.downloadErrorExcel(errorList, response);
+		        return;
+		    }
+
+		    // 전부 정상이면 리다이렉트 (JS로 처리)
+		    response.sendRedirect("/final_hotel/admin/room/branch/list");
+		}
 
 }
