@@ -42,6 +42,9 @@ public interface AdminReservationDAO {
 
 	// 호텔 조회 필터 추가
 	List<Map<String, Object>> selectHotelList();
+	
+	// 추가(페이징)
+	List<Map<String, Object>> selectAdminReservationListForExcel(Map<String, Object> param);
 
 	
 

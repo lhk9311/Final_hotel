@@ -44,6 +44,8 @@ public interface AdminReservationService {
 
 	List<Map<String, Object>> selectHotelList();
 
+	// 추가(페이징)
+	List<Map<String, Object>> selectAdminReservationListForExcel(Map<String, Object> param);
 	
 
 	

@@ -98,7 +98,11 @@ public class AdminReservationDAO_imple implements AdminReservationDAO {
 	    return sqlsession.selectOne("adminReservation.findReservation", reservationId);
 	}
 
-	
+	// 추가(페이징)
+	@Override
+	public List<Map<String, Object>> selectAdminReservationListForExcel(Map<String, Object> param) {
+	    return sqlsession.selectList("adminReservation.selectAdminReservationListForExcel", param);
+	}
 	
 
 }

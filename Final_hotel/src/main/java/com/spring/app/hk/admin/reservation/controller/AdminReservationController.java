@@ -1,5 +1,6 @@
 package com.spring.app.hk.admin.reservation.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,9 +175,41 @@ public class AdminReservationController {
 	    param.put("name", name);
 	    param.put("status", status);
 
-	    List<Map<String,Object>> list = reservationService.selectAdminReservationList(param);
-	    excelService.downloadReservationExcel(list, response);
+	    int page = 1;
+	    int pageSize = 1000; // 테스트용. 확인 끝나면 1000으로 변경 3으로 끊어서 조회 함.
+
+	    List<Map<String,Object>> allList = new ArrayList<>();
+
+	    while (true) {
+
+	        int offset = (page - 1) * pageSize;
+
+	        param.put("offset", offset);
+	        param.put("limit", pageSize);
+
+	        List<Map<String,Object>> list =
+	            reservationService.selectAdminReservationListForExcel(param);
+
+	        System.out.println(
+	            "[Excel Paging] page=" + page
+	            + ", offset=" + offset
+	            + ", limit=" + pageSize
+	            + ", 조회건수=" + list.size()
+	        );
+
+	        if (list.isEmpty()) break;
+
+	        allList.addAll(list);
+
+	        if (list.size() < pageSize) break;
+
+	        page++;
+	    }
+
+	    excelService.downloadReservationExcel(allList, response);
 	}
+	
+	
 	
 	
 }
