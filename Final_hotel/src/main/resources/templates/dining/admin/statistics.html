@@ -82,7 +82,7 @@
                 });
 
                 $('#totalRevenue').text(totalRev.toLocaleString() + '원');
-                $('#totalCount').text(totalCnt + '명');
+                $('#totalCount').text(totalCnt + '건');
                 $('#avgRevenue').text(totalCnt > 0 ? Math.floor(totalRev / totalCnt).toLocaleString() + '원' : '0원');
 
                 const timeLabels = timeStats.map(item => item.RES_TIME);
