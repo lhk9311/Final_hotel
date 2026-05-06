@@ -66,7 +66,10 @@ spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백�
   datasource-finalorauser1: #첫번째 DB 접속. 이름을 다르게 해서 쓰되 _ 가 들어가면 작동안됨.
     driver-class-name: oracle.jdbc.OracleDriver
     #jdbcUrl: jdbc:oracle:thin:@211.63.89.70:1521:xe    # SID 방식  
-    jdbcUrl: jdbc:oracle:thin:@127.0.0.1:1521:xe    # SID 방식 
+    
+    
+    #jdbcUrl: jdbc:oracle:thin:@127.0.0.1:1521:xe    # SID 방식  ---> 여기로 바꿔야 !! 로컬에서 돌아감
+    jdbcUrl: jdbc:oracle:thin:@oracle:1521:xe    # 배포용으로 변경
     #username: final_orauser1
     username: final_orauser1
     password: sistsix
