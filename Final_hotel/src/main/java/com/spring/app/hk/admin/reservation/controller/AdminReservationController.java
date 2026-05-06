@@ -162,8 +162,9 @@ public class AdminReservationController {
 	    return "hk/admin/reservation/adminreservationList";
 	}
 	
-	
-	// 엑셀 다운로드
+
+	/*
+	// 엑셀 다운로드 (기존)
 	//@PreAuthorize("hasRole('ADMIN_HQ')")
 	@GetMapping("/excel")
 	public void downloadExcel(
@@ -208,7 +209,23 @@ public class AdminReservationController {
 
 	    excelService.downloadReservationExcel(allList, response);
 	}
+	*/
 	
+	// 엑셀 다운로드 (개선) -> 검색 조건만 수집하고, excel 생성 및 페이징 처리 책임은 excelservice로 위임함.
+	@GetMapping("/excel")
+	public void downloadExcel(
+	        @RequestParam(value="name", required=false) String name,
+	        @RequestParam(value="status", required=false) String status,
+	        @RequestParam(value="hotelId", required=false) String hotelId,
+	        HttpServletResponse response) throws Exception {
+
+	    Map<String,Object> param = new HashMap<>();
+	    param.put("name", name);
+	    param.put("status", status);
+	    param.put("hotelId", hotelId);
+
+	    excelService.downloadReservationExcelByPaging(param, response);
+	}
 	
 	
 	

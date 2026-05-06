@@ -1,5 +1,6 @@
 package com.spring.app.hk.admin.reservation.service;
 
+import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -14,8 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class ExcelService_imple implements ExcelService {
 
+	 private final AdminReservationService reservationService;
+	
     private static final String[] HEADERS = {
         "예약번호", "회원", "호텔", "객실타입",
         "체크인", "체크아웃", "가격", "결제상태", "예약상태"
@@ -230,4 +234,94 @@ public class ExcelService_imple implements ExcelService {
             return false;
         }
     }
+    
+  
+    // 개선
+    @Override
+    public void downloadReservationExcelByPaging(Map<String, Object> param,
+                                                 HttpServletResponse response) throws Exception {
+
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=reservation_list.xlsx");
+
+        SXSSFWorkbook wb = new SXSSFWorkbook(100);
+        wb.setCompressTempFiles(true);
+
+        try {
+            SXSSFSheet sheet = wb.createSheet("예약목록");
+            sheet.trackAllColumnsForAutoSizing();
+
+            CellStyle headerStyle = wb.createCellStyle();
+            Font headerFont = wb.createFont();
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+            headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            headerStyle.setBorderBottom(BorderStyle.THIN);
+
+            int rowNo = 0;
+
+            Row header = sheet.createRow(rowNo++);
+            for (int i = 0; i < HEADERS.length; i++) {
+                Cell cell = header.createCell(i);
+                cell.setCellValue(HEADERS[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            int page = 1;
+            int pageSize = 1000;  // 테스트용... 3 -> 1000
+
+            while (true) {
+                int offset = (page - 1) * pageSize;
+
+                param.put("offset", offset);
+                param.put("limit", pageSize);
+
+                List<Map<String, Object>> list =
+                        reservationService.selectAdminReservationListForExcel(param);
+
+                System.out.println(
+                    "[Excel Paging] page=" + page
+                    + ", offset=" + offset
+                    + ", limit=" + pageSize
+                    + ", 조회건수=" + list.size()
+                );
+
+                if (list.isEmpty()) {
+                    break;
+                }
+
+                for (Map<String, Object> r : list) { // 즉시 작성
+                    Row row = sheet.createRow(rowNo++);
+
+                    row.createCell(0).setCellValue(String.valueOf(r.get("RESERVATION_ID")));
+                    row.createCell(1).setCellValue(String.valueOf(r.get("NAME")));
+                    row.createCell(2).setCellValue(String.valueOf(r.get("HOTEL_NAME")));
+                    row.createCell(3).setCellValue(String.valueOf(r.get("ROOM_TYPE_ID")));
+                    row.createCell(4).setCellValue(String.valueOf(r.get("CHECKIN_DATE")));
+                    row.createCell(5).setCellValue(String.valueOf(r.get("CHECKOUT_DATE")));
+                    row.createCell(6).setCellValue(String.valueOf(r.get("TOTAL_PRICE")));
+                    row.createCell(7).setCellValue(String.valueOf(r.get("PAYMENT_STATUS")));
+                    row.createCell(8).setCellValue(String.valueOf(r.get("RESERVATION_STATUS")));
+                }
+
+                if (list.size() < pageSize) {
+                    break;
+                }
+
+                page++;
+            }
+
+            for (int i = 0; i < HEADERS.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            wb.write(response.getOutputStream());
+
+        } finally {
+            wb.dispose();
+            wb.close();
+        }
+    }
+
 }

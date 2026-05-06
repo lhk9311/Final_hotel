@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE   = "leehk9311/final_hotel"
-        SERVER_IP      = "13.125.241.228"
+        SERVER_IP      = "52.78.28.91"
         CONTAINER_NAME = "final-hotel"
     }
 
@@ -48,19 +48,19 @@ pipeline {
 		}
 
         stage('Deploy to Server') {
-            steps {
-                sshagent(['SERVER_SSH_KEY']) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@$SERVER_IP '
-                            docker stop $CONTAINER_NAME || true
-                            docker rm $CONTAINER_NAME || true
-                            docker pull $DOCKER_IMAGE:latest
-                            docker run -d --name $CONTAINER_NAME --restart unless-stopped -p 8001:9081 $DOCKER_IMAGE:latest
-                        '
-                    """
-                }
-            }
-        }
+		    steps {
+		        sshagent(['SERVER_SSH_KEY']) {
+		            sh """
+		                ssh -o StrictHostKeyChecking=no ubuntu@$SERVER_IP '
+		                    cd ~/app
+		                    docker pull $DOCKER_IMAGE:latest
+		                    docker compose down
+		                    docker compose up -d
+		                '
+		            """
+		        }
+		    }
+		}
     }
 
     post {

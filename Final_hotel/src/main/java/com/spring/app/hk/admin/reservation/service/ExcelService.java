@@ -14,4 +14,8 @@ public interface ExcelService {
     List<Map<String,Object>> parseRoomExcel(MultipartFile file) throws Exception;
     void downloadErrorExcel(List<Map<String,Object>> errorList,
                              HttpServletResponse response) throws Exception;
+    
+    // 변경
+    void downloadReservationExcelByPaging(Map<String, Object> param,
+            HttpServletResponse response) throws Exception;
 }
