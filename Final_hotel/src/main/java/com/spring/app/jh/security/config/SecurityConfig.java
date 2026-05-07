@@ -285,7 +285,10 @@ public class SecurityConfig {
                              "/jquery-ui-1.13.1.custom/**",
                              "/js/**",
                              "/smarteditor/**",
-                             "/resources/photo_upload/**");
+                             "/resources/photo_upload/**",
+                             "/swagger-ui/**",
+                             "/swagger-ui.html",
+                             "/v3/api-docs/**");
     }
     
     
