@@ -186,6 +186,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")	
 	
+	// 스웨거
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
 		
 	
 }
@@ -211,3 +213,7 @@ tasks.withType(JavaCompile) {
 tasks.named('bootJar') {
     mainClass = 'com.spring.app.FinalProjectApplication'
 }
+
+
+
+

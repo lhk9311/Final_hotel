@@ -3,7 +3,7 @@ spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백�
     name: Final_hotel
  
   profiles: #실행환경(dev(개발),test(테스트),local(로컬),prod(운영))
-    #active: local 이거였는데, 배포 위해서 하기처럼 변경함 !!
+    #active: local #이거였는데, 배포 위해서 하기처럼 변경함 !!
     active: prod
 
   thymeleaf:
@@ -211,3 +211,8 @@ coolsms:
     key: NCSKSXJ1S7X4BSFB
     secret: G6ZSVCJAAXIARC4EGOJM4D2HVKWKJKMG
   from: 01095994076
+  
+springdoc:
+  swagger-ui:
+    path: /swagger-ui/index.html
+  default-produces-media-type: application/json
