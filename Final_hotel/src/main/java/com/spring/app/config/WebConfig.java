@@ -17,7 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
    public void addResourceHandlers(ResourceHandlerRegistry registry) {
       
        registry.addResourceHandler("/file_images/**")
-         .addResourceLocations("file:./file_images/");
+         	   .addResourceLocations("file:./file_images/");
       // Spring 은 다음의 순서대로 찾는다. 
       // 제일먼저, 외부 업로드 폴더를 먼저 검색하고(file_images/쉐보레.jpg) 있으면 이것을 사용하고,
       // 만약에 없으면 static 을 검색한다.(static/images/쉐보레.jpg)

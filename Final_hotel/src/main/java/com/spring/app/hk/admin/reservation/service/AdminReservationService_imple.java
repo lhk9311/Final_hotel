@@ -80,5 +80,10 @@ public class AdminReservationService_imple implements AdminReservationService {
 	    reservationDAO.updateNoShow(reservationId);
 	}
 	
+	// 추가(페이징)
+	@Override
+	public List<Map<String, Object>> selectAdminReservationListForExcel(Map<String, Object> param) {
+	    return reservationDAO.selectAdminReservationListForExcel(param);
+	}
 	
 }

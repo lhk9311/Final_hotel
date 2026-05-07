@@ -390,5 +390,39 @@
 	</select>
 	
 
+	<!--  엑셀 업로드용
+ -->	<insert id="insertRoomFromExcel" parameterType="map">
+    INSERT INTO room_type
+    (
+        room_type_id,
+        fk_hotel_id,
+        room_name,
+        room_grade,
+        room_size,
+        bed_type,
+        view_type,
+        base_price,
+        max_capacity,
+        total_count,
+        approve_status,
+        is_active
+    )
+    VALUES
+    (
+        seq_room_type.nextval,
+        #{fkHotelId, jdbcType=NUMERIC},
+        #{roomName, jdbcType=VARCHAR},
+        #{roomGrade, jdbcType=VARCHAR},
+        #{roomSize, jdbcType=NUMERIC},
+        #{bedType, jdbcType=VARCHAR},
+        #{viewType, jdbcType=VARCHAR},
+        #{basePrice, jdbcType=NUMERIC},
+        #{maxCapacity, jdbcType=NUMERIC},
+        #{totalCount, jdbcType=NUMERIC},
+        'PENDING',
+        'Y'
+    )
+</insert>
+
 	
 </mapper>

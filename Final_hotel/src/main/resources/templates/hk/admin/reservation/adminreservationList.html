@@ -132,6 +132,7 @@ tbody tr:hover{
 .checked_in { background:#dcfce7; color:#16a34a; }
 .checked_out { background:#f3f4f6; color:#6b7280; }
 .cancelled { background:#fee2e2; color:#dc2626; }
+.no_show { background:#fef3c7; color:#d97706; }
 
 /* ============================= */
 /* 스크롤 */
@@ -175,6 +176,7 @@ tbody tr:hover{
     <option value="CHECKED_IN" th:selected="${status == 'CHECKED_IN'}">체크인</option>
     <option value="CHECKED_OUT" th:selected="${status == 'CHECKED_OUT'}">체크아웃</option>
     <option value="CANCELLED" th:selected="${status == 'CANCELLED'}">예약취소</option>
+    <option value="NO_SHOW" th:selected="${status == 'NO_SHOW'}">노쇼</option>
 </select>
 
 <select name="hotelId">

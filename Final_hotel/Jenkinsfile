@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE   = "jehyung/final-hotel"
-        SERVER_IP      = "52.78.215.25"
+        DOCKER_IMAGE   = "leehk9311/final_hotel"
+        SERVER_IP      = "52.78.28.91"
         CONTAINER_NAME = "final-hotel"
     }
 
@@ -20,43 +20,47 @@ pipeline {
         }
 
         stage('Build with Gradle') {
-            steps {
-                sh 'chmod +x ./gradlew'
-                sh './gradlew clean build -x test'
-            }
-        }
+		    steps {
+		        dir('Final_hotel') {
+		            sh 'chmod +x ./gradlew'
+		            sh './gradlew clean build -x test'
+		        }
+		    }
+		}
 
         stage('Docker Build & Push') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub_info',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh '''
-                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        docker build -t $DOCKER_IMAGE:latest .
-                        docker push $DOCKER_IMAGE:latest
-                        docker logout || true
-                    '''
-                }
-            }
-        }
+		    steps {
+		        dir('Final_hotel') {
+		            withCredentials([usernamePassword(
+		                credentialsId: 'dockerhub_info',
+		                usernameVariable: 'DOCKER_USER',
+		                passwordVariable: 'DOCKER_PASS'
+		            )]) {
+		                sh '''
+		                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+		                    docker build -t $DOCKER_IMAGE:latest .
+		                    docker push $DOCKER_IMAGE:latest
+		                    docker logout || true
+		                '''
+		            }
+		        }
+		    }
+		}
 
         stage('Deploy to Server') {
-            steps {
-                sshagent(['SERVER_SSH_KEY']) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@$SERVER_IP '
-                            docker stop $CONTAINER_NAME || true
-                            docker rm $CONTAINER_NAME || true
-                            docker pull $DOCKER_IMAGE:latest
-                            docker run -d --name $CONTAINER_NAME --restart unless-stopped -p 8001:8001 $DOCKER_IMAGE:latest
-                        '
-                    """
-                }
-            }
-        }
+		    steps {
+		        sshagent(['SERVER_SSH_KEY']) {
+		            sh """
+		                ssh -o StrictHostKeyChecking=no ubuntu@$SERVER_IP '
+		                    cd ~/app
+		                    docker pull $DOCKER_IMAGE:latest
+		                    docker compose down
+		                    docker compose up -d
+		                '
+		            """
+		        }
+		    }
+		}
     }
 
     post {

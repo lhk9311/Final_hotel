@@ -260,6 +260,62 @@
 		    WHERE active_yn = 'Y'
 		    ORDER BY hotel_name
 		</select>
+		
+		<!-- 예약조회 (페이징) -->
+<select id="selectAdminReservationListForExcel"
+        parameterType="map"
+        resultType="map">
+
+    SELECT *
+    FROM (
+        SELECT inner_query.*, ROWNUM AS rnum
+        FROM (
+            SELECT
+                r.reservation_id,
+                m.name,
+                h.hotel_name,
+                rt.room_type_id,
+                r.checkin_date,
+                r.checkout_date,
+                r.total_price,
+                p.payment_status,
+                r.reservation_status,
+                r.created_at
+            FROM reservation r
+
+            JOIN tbl_member_security m
+                ON r.member_no = m.member_no
+
+            JOIN room_type rt
+                ON r.room_type_id = rt.room_type_id
+
+            JOIN tbl_hotel h
+                ON rt.fk_hotel_id = h.hotel_id
+
+            LEFT JOIN payment p
+                ON r.payment_id = p.payment_id
+
+            <where>
+                <if test="name != null and name != ''">
+                    AND m.name LIKE '%' || #{name} || '%'
+                </if>
+
+                <if test="status != null and status != ''">
+                    AND r.reservation_status = #{status}
+                </if>
+
+                <if test="hotelId != null and hotelId != ''">
+                    AND h.hotel_id = #{hotelId}
+                </if>
+            </where>
+
+            ORDER BY r.created_at DESC
+        ) inner_query
+        WHERE ROWNUM &lt;= #{offset} + #{limit}
+    )
+    WHERE rnum &gt; #{offset}
+
+</select>
 	
 
 </mapper>

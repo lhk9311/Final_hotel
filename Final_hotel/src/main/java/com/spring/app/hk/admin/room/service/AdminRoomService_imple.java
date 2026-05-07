@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.spring.app.common.FileManager;
 import com.spring.app.hk.admin.room.model.AdminRoomDAO;
 import com.spring.app.hk.room.domain.RoomTypeDTO;
 
@@ -21,6 +23,11 @@ public class AdminRoomService_imple implements AdminRoomService {
 
     private final AdminRoomDAO adminRoomDAO;
 
+    private final FileManager fileManager;
+
+    @Value("${file.images-dir}")
+    private String imagesDir;
+    
     // ======== 지점관리자 ========
     // 객실 목록 조회
     @Override
@@ -40,35 +47,23 @@ public class AdminRoomService_imple implements AdminRoomService {
 
         int roomTypeId = Integer.parseInt(map.get("roomTypeId"));
 
-        if(roomImage != null && !roomImage.isEmpty()){
-
+        if (roomImage != null && !roomImage.isEmpty()) {
             try {
-                String fileName = System.currentTimeMillis() + "_" + roomImage.getOriginalFilename();
+                String roomPath = imagesDir + File.separator + "room";
 
-                // ✅ 절대경로로 변경
-                String uploadPath = "C:/upload/room/";
+                String savedName = fileManager.doFileUpload(
+                        roomImage.getBytes(),
+                        roomImage.getOriginalFilename(),
+                        roomPath
+                );
 
-                File dir = new File(uploadPath);
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
-
-                File saveFile = new File(uploadPath + fileName);
-
-                // ✅ 부모 폴더까지 확실히 생성
-                saveFile.getParentFile().mkdirs();
-
-                roomImage.transferTo(saveFile);
-
-                String imageUrl = "/file_images/room/" + fileName;
-
-                Map<String,Object> imageMap = new HashMap<>();
+                Map<String, Object> imageMap = new HashMap<>();
                 imageMap.put("roomTypeId", roomTypeId);
-                imageMap.put("image_url", imageUrl);
+                imageMap.put("image_url", "/file_images/room/" + savedName);
 
                 adminRoomDAO.updateRoomImage(imageMap);
 
-            } catch(Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -100,48 +95,34 @@ public class AdminRoomService_imple implements AdminRoomService {
 
     
     // 객실 반려 후 수정 (이미지 교체 처리)
- 	@Override
- 	public void updateRoom(Map<String, String> map, MultipartFile roomImage) {
+    @Override
+    public void updateRoom(Map<String, String> map, MultipartFile roomImage) {
 
- 	    // 1️. 객실 기본 정보 수정
- 	    adminRoomDAO.updateRoom(map);
+        adminRoomDAO.updateRoom(map);
 
- 	    // 객실 ID
- 	    int roomTypeId = Integer.parseInt(map.get("roomTypeId"));
+        int roomTypeId = Integer.parseInt(map.get("roomTypeId"));
 
- 	    // 2️. 이미지 교체 요청이 있을 경우
- 	    if(roomImage != null && !roomImage.isEmpty()){
+        if (roomImage != null && !roomImage.isEmpty()) {
+            try {
+                String roomPath = imagesDir + File.separator + "room";
 
- 	        try {
+                String savedName = fileManager.doFileUpload(
+                        roomImage.getBytes(),
+                        roomImage.getOriginalFilename(),
+                        roomPath
+                );
 
- 	            String fileName = roomImage.getOriginalFilename();
+                Map<String, Object> imageMap = new HashMap<>();
+                imageMap.put("roomTypeId", roomTypeId);
+                imageMap.put("image_url", "/file_images/room/" + savedName);
 
- 	            // 파일 저장 경로
- 	            String uploadPath = "C:/upload/room/";
+                adminRoomDAO.updateRoomImage(imageMap);
 
- 	            java.io.File saveFile =
- 	                    new java.io.File(uploadPath + fileName);
-
- 	            roomImage.transferTo(saveFile);
-
- 	            // 이미지 URL
- 	            String imageUrl = "/file_images/room/" + fileName;
-
- 	            Map<String,Object> imageMap = new java.util.HashMap<>();
-
- 	            imageMap.put("roomTypeId", roomTypeId);
- 	            imageMap.put("image_url", imageUrl);
-
- 	            // 이미지 UPDATE
- 	            adminRoomDAO.updateRoomImage(imageMap);
-
- 	        } catch(Exception e){
- 	            e.printStackTrace();
- 	        }
-
- 	    }
-
- 	}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
  	
  	
  	// 반려 후 재상신
@@ -230,6 +211,15 @@ public class AdminRoomService_imple implements AdminRoomService {
 	@Override
 	public List<Map<String, Object>> selectHotelList() {
 	    return adminRoomDAO.selectHotelList();
+	}
+
+
+	// 엑셀 업로드
+	@Override
+	public void insertRoomFromExcel(Map<String, Object> room) {
+	    room.put("approve_status", "PENDING");
+	    room.put("is_active", "Y");
+	    adminRoomDAO.insertRoomFromExcel(room);
 	}
 
 	

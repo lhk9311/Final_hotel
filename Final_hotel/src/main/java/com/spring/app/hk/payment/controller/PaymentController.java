@@ -76,7 +76,7 @@ public class PaymentController {
 	            restTemplate.exchange(paymentUrl, HttpMethod.GET, paymentEntity, Map.class);
 
 	        } catch (Exception e) {
-	            System.out.println("==== 포트원 결제 검증 실패(임시 무시) ====");
+	            System.out.println("==== 외부 결제 API 검증 실패 로그 처리 ====");
 	            e.printStackTrace();
 	        }
 

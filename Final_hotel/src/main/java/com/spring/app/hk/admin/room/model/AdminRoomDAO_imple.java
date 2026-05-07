@@ -159,5 +159,11 @@ public class AdminRoomDAO_imple implements AdminRoomDAO {
 	public List<Map<String, Object>> selectHotelList() {
 	    return sqlsession.selectList("adminRoom.selectHotelList");
 	}
+	
+	// 추가
+	@Override
+	public void insertRoomFromExcel(Map<String, Object> paraMap) {
+	    sqlsession.insert("adminRoom.insertRoomFromExcel", paraMap);
+	}
 
 }

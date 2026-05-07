@@ -59,6 +59,9 @@ public interface AdminRoomService {
 	// 호텔 필터 추가
 	Object selectHotelList();
 
+	// 엑셀 업로드
+	void insertRoomFromExcel(Map<String, Object> room);
+
 	
 
 	
