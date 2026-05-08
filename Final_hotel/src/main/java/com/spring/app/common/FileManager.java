@@ -92,14 +92,14 @@ public class FileManager {
 		// 해당경로에 \ 를 더하고 파일명을 더한 경로까지 나타내어준 파일명(문자열)을 만든다.
 		// pathname 은 예를 들면, C:\NCS\workspace_spring_boot_17\myspring\src\main\webapp\resources\files\20250712122533_48d82ae1e33a4682b9c03f8421538a43.jpg 이다.
 		
-		FileOutputStream fos = new FileOutputStream(pathname);
+		try(FileOutputStream fos = new FileOutputStream(pathname)) {
 		// FileOutputStream 는 해당 경로 파일명(pathname)에 실제로 데이터 내용(byte[] bytes)을 기록해주는 클래스 이다.
 		// 이러한 일을 하는 FileOutputStream 객체 fos 를 생성한다.
 		
-		fos.write(bytes);
+		fos.write(bytes);}
 		// write(byte[] bytes) 메소드가 해당 경로 파일명(pathname)에 실제로 데이터 내용(byte[] bytes)을 기록해주는 일을 하는 것이다.
 		
-		fos.close();
+		//fos.close();
 		// 생성된 FileOutputStream 객체 fos 가 더이상 사용되지 않도록 소멸 시킨다.
 		
 		return newFileName;
@@ -141,14 +141,14 @@ public class FileManager {
 		
 		byte[] byteArr = new byte[1024];
 		int size = 0;
-		FileOutputStream fos = new FileOutputStream(pathname);
+		try(FileOutputStream fos = new FileOutputStream(pathname)) {
 		
-		while((size = is.read(byteArr)) != -1) {
-			fos.write(byteArr, 0, size);
+			while((size = is.read(byteArr)) != -1) {
+				fos.write(byteArr, 0, size);
+			}
+			fos.flush();
 		}
-		fos.flush();
-		
-		fos.close();
+				
 		is.close();
 		
 		return newFileName;		
@@ -207,11 +207,11 @@ public class FileManager {
 		    	byte[] readByte = new byte[4096];
 				// 다운로드할 파일의 내용을 읽어오는 단위크기를 4096 byte로 하는 byte 배열 readByte 를 생성한다. 
 		    	
-		    	BufferedInputStream bfin = new BufferedInputStream(new FileInputStream(file)); 
+		    	try(BufferedInputStream bfin = new BufferedInputStream(new FileInputStream(file)); 
 			    // 클라이언트가 다운로드 해야 할 파일(file)을 읽어들이기 위해 new FileInputStream(file) 을 생성함. 
 				// 또한 빠르게 읽어들이기 위해서 필터스트림(보조스트림) BufferedInputStream bfin 을 장착함.
 		    	
-		    	ServletOutputStream souts = response.getOutputStream();
+		    	ServletOutputStream souts = response.getOutputStream()) {
 				// ServletOutputStream 은 다운로드 되어질 파일을 클라이언트로 보내어주는 출력 스트림용 클래스이다. 
 		    	
 		    	int length = 0;
@@ -235,11 +235,11 @@ public class FileManager {
 				
 				souts.flush(); // ServletOutputStream souts 에 기록(저장)해둔 내용을 클라이언트로 내본다. 
 				
-				souts.close(); // ServletOutputStream souts 객체를 소멸시킨다.
-				bfin.close();  // BufferedInputStream bfin 객체를 소멸시킨다.
+				// souts.close(); // ServletOutputStream souts 객체를 소멸시킨다.
+				// bfin.close();  // BufferedInputStream bfin 객체를 소멸시킨다.
 				
 				return true; // 다운로드 해줄 파일이 존재하고 Exception 이 발생하지 않으면 true 를 리턴시킨다.  
-				
+		    	}
 		    }// end of if(file.exists())-----------------
 	    
 	    } catch(Exception e) {}
