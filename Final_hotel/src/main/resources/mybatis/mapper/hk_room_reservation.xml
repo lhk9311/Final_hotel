@@ -87,7 +87,7 @@
 	    VALUES (
 	        #{reservation_id},
 	        'R' || TO_CHAR(SYSDATE,'YYYYMMDD') || '-' ||
-	        LPAD(#{reservation_id},4,'0'),
+	        LPAD(#{reservation_id},8,'0'),
 	        #{member_no},
 	        #{room_type_id},
 	        #{payment_id},

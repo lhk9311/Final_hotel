@@ -61,12 +61,23 @@ public class PaymentController {
 	            ResponseEntity<Map> tokenResponse =
 	                    restTemplate.postForEntity(tokenUrl, tokenEntity, Map.class);
 
+	          /*
 	            String accessToken =
 	                    (String) ((Map) tokenResponse.getBody().get("response"))
 	                            .get("access_token");
-
+	           */
+	            // 소나큐브 (npe 가능성 있어서 바꿈!)
+	            Map responseBody = tokenResponse.getBody();
+	            if (responseBody == null) {
+	                throw new Exception("토큰 응답이 null입니다.");
+	            }
+	            String accessToken =
+	                    (String) ((Map) responseBody.get("response"))
+	                            .get("access_token");            
+	            
 	            String paymentUrl = "https://api.iamport.kr/payments/" + impUid;
 
+	            // 
 	            HttpHeaders paymentHeaders = new HttpHeaders();
 	            paymentHeaders.set("Authorization", accessToken);
 

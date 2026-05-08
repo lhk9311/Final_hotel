@@ -249,7 +249,7 @@ public class ReservationService_imple implements ReservationService {
         // 예약 코드 생성
         String reservationCode = "R"
                 + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"))
-                + "-" + String.format("%04d", reservationId);
+                + "-" + String.format("%08d", reservationId);
 
         // ======================= SMS 발송 =======================
         try {

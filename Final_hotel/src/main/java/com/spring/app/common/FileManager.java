@@ -257,7 +257,10 @@ public class FileManager {
 		File file = new File(pathname);
 		
 		if(file.exists()) {
-			file.delete();
+		    boolean deleted = file.delete();
+		    if(!deleted) {
+		        throw new Exception("파일 삭제 실패: " + filename);
+		    }
 		}
 		
 	}// end of public void doFileDelete(String filename, String path) throws Exception------

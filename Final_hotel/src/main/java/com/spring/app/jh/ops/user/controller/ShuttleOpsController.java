@@ -109,7 +109,11 @@ public class ShuttleOpsController {
             }
 
             if (principal instanceof CustomUserDetails cud) {
-                return Integer.valueOf(cud.getMemberDto().getMemberNo());
+            	// 이렇게 안 써도 되고
+//            	return Integer.valueOf(cud.getMemberDto().getMemberNo());
+
+            	// 그냥 이렇게만 해도 Java가 알아서 Integer로 바꿔줌
+            	return cud.getMemberDto().getMemberNo();
             }
         }
 

@@ -3,8 +3,8 @@ spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백�
     name: Final_hotel
  
   profiles: #실행환경(dev(개발),test(테스트),local(로컬),prod(운영))
-    #active: local #이거였는데, 배포 위해서 하기처럼 변경함 !!
-    active: prod
+    active: local #이거였는데, 배포 위해서 하기처럼 변경함 !!
+    #active: prod
 
   thymeleaf:
     cache: false
@@ -68,8 +68,8 @@ spring: # 주의할 점은 내용작성시 들여쓰기 내어쓰기시 공백�
     #jdbcUrl: jdbc:oracle:thin:@211.63.89.70:1521:xe    # SID 방식  
     
     
-    #jdbcUrl: jdbc:oracle:thin:@127.0.0.1:1521:xe    # SID 방식  ---> 여기로 바꿔야 !! 로컬에서 돌아감
-    jdbcUrl: jdbc:oracle:thin:@oracle:1521:xe    # 배포용으로 변경
+    jdbcUrl: jdbc:oracle:thin:@127.0.0.1:1521:xe    # SID 방식  ---> 여기로 바꿔야 !! 로컬에서 돌아감
+    #jdbcUrl: jdbc:oracle:thin:@oracle:1521:xe    # 배포용으로 변경
     #username: final_orauser1
     username: final_orauser1
     password: sistsix

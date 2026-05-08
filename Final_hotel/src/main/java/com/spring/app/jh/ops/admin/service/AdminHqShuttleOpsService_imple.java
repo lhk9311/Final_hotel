@@ -73,6 +73,8 @@ public class AdminHqShuttleOpsService_imple implements AdminHqShuttleOpsService 
         // 화면에서 "선택 호텔" 은 HOTEL_{hotelId} 코드로 넘어오도록 맞춘 상태
         String hotelPlaceCode = "HOTEL_" + hotelId;
 
+        // 항상 false (소나큐브
+        /*
         if ("TO_HOTEL".equals(routeType)) {
 
             // TO_HOTEL : 외부 장소 -> 선택 호텔
@@ -93,6 +95,24 @@ public class AdminHqShuttleOpsService_imple implements AdminHqShuttleOpsService 
             }
 
             if (hotelPlaceCode.equals(endPlaceCode)) {
+                throw new IllegalArgumentException("FROM_HOTEL 노선의 도착지는 외부 장소여야 합니다.");
+            }
+        }       
+        */
+        if ("TO_HOTEL".equals(routeType)) {
+            if (!hotelPlaceCode.equals(endPlaceCode)) {
+                throw new IllegalArgumentException("TO_HOTEL 노선의 도착지는 선택 호텔이어야 합니다.");
+            }
+            if (startPlaceCode.equals(hotelPlaceCode)) {
+                throw new IllegalArgumentException("TO_HOTEL 노선의 출발지는 외부 장소여야 합니다.");
+            }
+        }
+
+        if ("FROM_HOTEL".equals(routeType)) {
+            if (!hotelPlaceCode.equals(startPlaceCode)) {
+                throw new IllegalArgumentException("FROM_HOTEL 노선의 출발지는 선택 호텔이어야 합니다.");
+            }
+            if (endPlaceCode.equals(hotelPlaceCode)) {
                 throw new IllegalArgumentException("FROM_HOTEL 노선의 도착지는 외부 장소여야 합니다.");
             }
         }

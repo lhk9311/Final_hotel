@@ -115,24 +115,23 @@ public class PromotionController {
         
         // ★ 비활성 프로모션 접근 제어 로직 추가 ★
         if (promo.getIs_active() == 0) {
-            boolean isAdmin = auth.getAuthorities().stream()
-                                 .anyMatch(a -> a.getAuthority().equals("ADMIN_BRANCH") || 
-                                                a.getAuthority().equals("ROLE_ADMIN_BRANCH"));
-
-            if (!isAdmin) {
-                // 어드민이 아니면 경고 메시지와 함께 리스트로 이동
-                mav.addObject("message", "종료되었거나 존재하지 않는 프로모션입니다.");
-                mav.addObject("loc", "javascript:history.back()");
-                mav.setViewName("msg"); // 공통 메시지 출력용 뷰가 있다면 사용
-                return mav;
-            }
+        	if (auth != null) {
+        	    boolean isAdmin = auth.getAuthorities().stream()
+        	                         .anyMatch(a -> a.getAuthority().equals("ADMIN_BRANCH") || 
+        	                                        a.getAuthority().equals("ROLE_ADMIN_BRANCH"));
+        	    if (!isAdmin) {
+        	        mav.addObject("message", "종료되었거나 존재하지 않는 프로모션입니다.");
+        	        mav.addObject("loc", "javascript:history.back()");
+        	        mav.setViewName("msg");
+        	        return mav;
+        	    }
+        	}
         }
 
-        mav.addObject("promo", promo);
-        mav.setViewName("js/promotion/detail");
-        return mav;
+	        mav.addObject("promo", promo);
+	        mav.setViewName("js/promotion/detail");
+	        return mav;
     }
-    
     /**
      * [관리자] 프로모션 등록 페이지 이동
      */
@@ -184,6 +183,9 @@ public class PromotionController {
         // 3. 파일 업로드 처리 (UUID 중복 방지 적용)
         if (attach != null && !attach.isEmpty()) {
             String originalFilename = attach.getOriginalFilename();
+            if (originalFilename == null || originalFilename.isEmpty()) {
+                paraMap.put("image_url", "");
+            } else {
             
             // 확장자 분리 및 UUID 생성
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
@@ -219,6 +221,8 @@ public class PromotionController {
                 
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+            
             }
         } else {
             paraMap.put("image_url", ""); 
@@ -294,6 +298,10 @@ public class PromotionController {
         if (attach != null && !attach.isEmpty()) {
             String originalFilename = attach.getOriginalFilename();
             
+            if (originalFilename == null || originalFilename.isEmpty()) {
+                paraMap.put("image_url", "");
+            } else {
+            
             String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
             String fileNameOnly = originalFilename.substring(0, originalFilename.lastIndexOf("."));
             
@@ -311,7 +319,7 @@ public class PromotionController {
             String staticPath = projectPath + File.separator + "src" + File.separator + "main" + 
                                 File.separator + "resources" + File.separator + "static" + 
                                 File.separator + "images" + File.separator + "js";
-
+            
             try {
                 byte[] fileData = attach.getBytes();
                 new File(deployPath).mkdirs();
@@ -322,7 +330,9 @@ public class PromotionController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
+        }
+            
+        }else {
             // 새 파일이 없는 경우 기존 image_url 유지를 위해 null 처리
             paraMap.put("image_url", null); 
         }

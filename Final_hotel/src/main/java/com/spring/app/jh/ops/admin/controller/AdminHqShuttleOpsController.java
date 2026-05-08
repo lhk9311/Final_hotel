@@ -46,7 +46,7 @@ public class AdminHqShuttleOpsController {
 
             // 선택한 호텔명도 같이 넘겨서 화면 상단 요약카드/타이틀에 사용
             String selectedHotelName = hotelList.stream()
-                    .filter(h -> h.getHotelId() == hotelId)
+            		.filter(h -> hotelId.equals(h.getHotelId()))
                     .map(HotelSimpleDTO::getHotelName)
                     .findFirst()
                     .orElse(null);
