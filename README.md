@@ -32,8 +32,6 @@
 - **GitHub**  
   https://github.com/lhk9311/Final_hotel
 
-- **Swagger UI**  
-  http://52.78.28.91/final_hotel/swagger-ui/index.html
 
 <br>
 
@@ -77,7 +75,6 @@
 | 객실 승인 프로세스 | 객실 신청 → 승인 / 반려 흐름 설계 |
 | 재고 자동 생성 | 승인 시 1년 기준 재고 자동 생성 |
 | 예약 관리 | 체크인 / 체크아웃 / 검색 / 엑셀 다운로드 |
-| 수익 관리 | 객실 / 다이닝 수익 통계 |
 
 <br>
 
@@ -147,7 +144,7 @@ JWT 전환 이후 AJAX POST 요청이 CSRF 검증 실패로 차단됨.
 
 <br>
 
-## 📁 프로젝트 구조 (담당 영역 중심)
+## 📁 프로젝트 구조
 
 ```text
 src/main/java/com/spring/app/
@@ -155,8 +152,12 @@ src/main/java/com/spring/app/
 ├── hk/
 │
 ├── hk/payment/
-│   └── controller/
-│       └── PaymentController.java
+│   ├── controller/
+│   │   └── PaymentController.java
+│   │
+│   ├── service/
+│   ├── model/
+│   └── domain/
 │
 ├── hk/reservation/
 │   ├── controller/
@@ -183,8 +184,8 @@ src/main/java/com/spring/app/
 ├── hk/room/
 │   ├── controller/
 │   │   ├── RoomController.java
-│   │   ├── RoomCompareController.java
-│   │   └── RoomDetailController.java
+│   │   ├── RoomDetailController.java
+│   │   └── RoomCompareController.java
 │   │
 │   ├── service/
 │   │   ├── RoomTypeService.java
@@ -195,10 +196,16 @@ src/main/java/com/spring/app/
 │   │   ├── RoomStockDAO.java
 │   │   └── RoomImageDAO.java
 │   │
-│   └── domain/
-│       ├── RoomDTO.java
-│       ├── RoomStockDTO.java
-│       └── RoomImageDTO.java
+│   ├── domain/
+│   │   ├── RoomDTO.java
+│   │   ├── RoomStockDTO.java
+│   │   └── RoomImageDTO.java
+│   │
+│   └── templates/
+│       ├── room/list.html
+│       ├── room/detail.html
+│       ├── reservation/form.html
+│       └── reservation/complete.html
 │
 ├── hk/admin/hotel/
 │   ├── controller/
@@ -217,7 +224,8 @@ src/main/java/com/spring/app/
 │   │   ├── AdminRoomApprovalController.java
 │   │   ├── AdminRoomRejectController.java
 │   │   ├── AdminRoomRegisterController.java
-│   │   └── AdminRoomStockController.java
+│   │   ├── AdminRoomStockController.java
+│   │   └── AdminRoomExcelUploadController.java
 │   │
 │   ├── service/
 │   ├── model/
@@ -228,6 +236,8 @@ src/main/java/com/spring/app/
 │   │   ├── AdminReservationListController.java
 │   │   ├── AdminCheckinController.java
 │   │   ├── AdminCheckoutController.java
+│   │   ├── AdminNoShowController.java
+│   │   ├── AdminStayListController.java
 │   │   └── ReservationExcelDownloadController.java
 │   │
 │   ├── service/
@@ -236,18 +246,27 @@ src/main/java/com/spring/app/
 │
 ├── jh/security/
 │   ├── JwtAuthenticationFilter.java
+│   ├── JwtTokenProvider.java
 │   ├── CustomOAuth2UserService.java
-│   ├── SecurityConfig.java
-│   └── JwtTokenProvider.java
+│   └── SecurityConfig.java
+│
+├── resources/
+│   ├── templates/
+│   ├── static/
+│   │   ├── css/
+│   │   ├── js/
+│   │   ├── images/
+│   │   └── upload/
+│   │
+│   └── application.yml
 │
 └── mybatis/mapper/
     ├── hk_room_select.xml
-    ├── hk_room_reservation.xml
     ├── hk_room_stock.xml
+    ├── hk_room_reservation.xml
     ├── hk_admin_room.xml
     ├── hk_admin_hotel.xml
-    ├── hk_admin_reservation.xml
-    └── ...
+    └── hk_admin_reservation.xml
 ```
 
 <br>
